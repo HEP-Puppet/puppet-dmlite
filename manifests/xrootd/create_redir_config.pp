@@ -6,6 +6,7 @@ define dmlite::xrootd::create_redir_config (
   $cmsd_port = undef,
   $local_port = undef,
   $paths = undef,
+  $direct = false,
 
   $namelib_prefix = undef,
   $namelib = undef,
@@ -29,6 +30,7 @@ define dmlite::xrootd::create_redir_config (
   $xrootd_seclib = $xrootd::config::xrootd_seclib,
 
   $xrd_network = $xrootd::config::xrd_network,
+  $xrd_timeout = $xrootd::config::xrd_timeout,
   $xrd_report = $xrootd::config::xrd_report,
   $xrootd_monitor = $xrootd::config::xrootd_monitor,
 
@@ -43,8 +45,11 @@ define dmlite::xrootd::create_redir_config (
   $ofs_tpc = $xrootd::config::ofs_tpc,
 
   $sec_protocol = $xrootd::config::sec_protocol,
+  $sec_level = $xrootd::config::sec_level,
 
   $pss_setopt = $xrootd::config::pss_setopt,
+  $cms_cidtag = $xrootd::config::cms_cidtag,
+  $oss_statlib = $xrootd::config::oss_statlib,
 
   $dpm_listvoms = undef,
   $dpm_mmreqhost = undef,
@@ -61,18 +66,19 @@ define dmlite::xrootd::create_redir_config (
   # constructing variables from the parameters
   $pss_origin = "localhost:${local_port}"
   $xrd_port = $local_port
-  $all_manager = "${fed_host}+:${cmsd_port}"
+  if($cmsd_port){
+    $all_manager = "${fed_host}+:${cmsd_port}"
+  }
   $all_export = $paths
 
   $dpm_namelib = $namelib
   $dpm_namecheck = $namelib_prefix
 
-  file { "${filename}":
+  file { $filename:
     ensure  => file,
     owner   => $xrootd::config::xrootd_user,
     group   => $xrootd::config::xrootd_group,
-    content => template($xrootd::config::configfile_template, 'dmlite/xrootd/dpm-xrootd.cfg.erb'
-    )
+    content => template($xrootd::config::configfile_template, 'dmlite/xrootd/dpm-xrootd.cfg.erb')
   }
 
 }

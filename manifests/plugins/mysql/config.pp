@@ -16,36 +16,46 @@ class dmlite::plugins::mysql::config (
   $user             = $dmlite::params::user,
   $group            = $dmlite::params::group,
   $adminuser        = undef,
+  $empty_conf       = false,
 ) inherits dmlite::plugins::mysql::params {
 
   if defined ('xrootd::service'){
-    Class[Dmlite::Plugins::Mysql::Config] ~> Class[Xrootd::Service]
+    Class[dmlite::plugins::mysql::config] ~> Class[xrootd::service]
   }
   if defined ('dmlite::dav::service'){
-    Class[Dmlite::Plugins::Mysql::Config] ~> Class[Dmlite::Dav::Service]
+    Class[dmlite::plugins::mysql::config] ~> Class[dmlite::dav::service]
   }
   if defined ('gridftp::service'){
-    Class[Dmlite::Plugins::Mysql::Config] ~> Class[Gridftp::Service]
+    Class[dmlite::plugins::mysql::config] ~> Class[gridftp::service]
   }
 
-    file {
-      '/etc/dmlite.conf.d/mysql.conf':
-        owner   => $user,
-        group   => $group,
-        mode    => '0600',
-        content => template('dmlite/plugins/mysql.conf.erb'),
-        require => Package['dmlite-plugins-mysql']
+  if $empty_conf {
+    file {'/etc/dmlite.conf.d/mysql.conf':
+      content => '',
+      owner   => $user,
+      group   => $group,
     }
-
-    if $enable_io {
-	    file {
-      		'/etc/dmlite-disk.conf.d/mysql.conf':
-	          owner   => $user,
-        	  group   => $group,
-        	  mode    => '0600',
-	          content => template('dmlite/plugins/mysql.conf.erb'),
-	          require => Package['dmlite-plugins-mysql']
-    	    }
+  } else {
+    file {'/etc/dmlite.conf.d/mysql.conf':
+      owner   => $user,
+      group   => $group,
+      mode    => '0750',
+      content => template('dmlite/plugins/mysql.conf.erb'),
+      require => Package['dmlite-plugins-mysql']
     }
+  }
 
+  if $enable_io {
+    file {'/etc/dmlite-disk.conf.d/mysql.conf':
+      owner   => $user,
+      group   => $group,
+      mode    => '0750',
+      content => template('dmlite/plugins/mysql.conf.erb'),
+      require => Package['dmlite-plugins-mysql']
+    }
+  } else {
+    file {'/etc/dmlite-disk.conf.d/mysql.conf':
+      ensure => absent,
+    }
+  }
 }

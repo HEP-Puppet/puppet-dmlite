@@ -1,9 +1,9 @@
 class dmlite::plugins::profiler(
-  $collectors = $dmlite::plugins::profiler::params::collectors,
-  $auth       = $dmlite::plugins::profiler::params::auth,
+  Array[String] $collectors = $dmlite::plugins::profiler::params::collectors,
+  String $auth = $dmlite::plugins::profiler::params::auth,
 ) inherits dmlite::plugins::profiler::params {
 
-  Class[Dmlite::Plugins::Profiler::Install] -> Class[Dmlite::Plugins::Profiler::Config]
+  Class[dmlite::plugins::profiler::install] -> Class[dmlite::plugins::profiler::config]
 
   class{'dmlite::plugins::profiler::config':
     collectors => $collectors,

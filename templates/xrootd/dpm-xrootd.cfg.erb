@@ -19,6 +19,16 @@ dpm.enablecmsclient
 # useful if voms attribute processing is enabled
 dpm.allowvo <%= @dpm_allowvo %>
 <% end -%>
+<% if @dpm_enable_dome -%>
+xrd.protocol XrdHttp /usr/lib64/libXrdHttp-4.so
+http.exthandler dome /usr/lib64/libdome.so <%= @dpm_dome_conf_file %>
+http.selfhttps2http yes
+http.cert /etc/grid-security/dpmmgr/dpmcert.pem
+http.key /etc/grid-security/dpmmgr/dpmkey.pem
+http.cadir /etc/grid-security/certificates
+http.secretkey  <%= @dpm_xrdhttp_secret_key %>
+http.cipherfilter <%= @dpm_xrdhttp_cipherlist %>
+<% end -%>
 fi
 <% if @dpm_namelib -%>
 dpm.namelib <%= @dpm_namelib %>
@@ -55,13 +65,15 @@ dpm.mmreqhost <%= @dpm_mmreqhost %>
 <%# federation redirects for the main config file %>
 <% if @dpm_xrootd_fedredirs and not @paths -%>
 <% @dpm_xrootd_fedredirs.sort.each do |fedname, redir| -%>
+<% if not redir['direct'] -%>
 <% redir['paths'].sort.each do |path| -%>
 xrootd.redirect <%= @dpm_host -%>:<%= redir['local_port'] -%> <%= File.join(path,"") %>
 <% end -%>
 <% end -%>
 <% end -%>
+<% end -%>
 <%# federation redirects for each federation config file %>
-<% if @paths -%>
+<% if @paths and @xrootd_port -%>
 <% @paths.sort.each do |path| -%>
 xrootd.redirect <%= @fed_host -%>:<%= @xrootd_port -%> ? <%= File.join(path,"") %>
 <% end -%>
@@ -72,4 +84,12 @@ xrootd.redirect <%= @fed_host -%>:<%= @xrootd_port -%> ? <%= File.join(path,"") 
 dpm.dmio
 <% end -%>
 
+<%# configure atlas dig auth %>
+<% if @digauth_filename  -%>
+xrootd.diglib * <%= @digauth_filename -%>
+<% end -%>
 
+<%# configure ofs.ckslib %>
+<% if @xrd_ofsckslib  -%>
+ofs.ckslib <%= @xrd_ofsckslib %>
+<% end -%>

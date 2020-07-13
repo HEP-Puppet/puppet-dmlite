@@ -1,0 +1,40 @@
+glb.role: head
+glb.debug: <%= @head_debug %>
+
+glb.auth.urlprefix: /domehead/
+
+glb.task.maxrunningtime: <%= @head_task_maxrunningtime %>
+glb.task.purgetime: <%= @head_task_purgetime %>
+head.dirspacereportdepth: <%= @dirspacereportdepth %>
+head.put.minfreespace_mb: <%= @put_minfreespace_mb %>
+<% @head_auth_authorizeDN.sort.each do |entry| -%>
+glb.auth.authorizeDN[]: <%= entry %>
+<% end -%>
+
+glb.restclient.cli_certificate: <%= @restclient_cli_certificate %>
+glb.restclient.cli_private_key: <%= @restclient_cli_private_key %>
+glb.restclient.xrdhttpkey: <%= @restclient_cli_xrdhttpkey %>
+head.filepulls.maxtotal: <%= @head_maxfilepulls %>
+head.filepulls.maxpernode: <%= @head_maxfilepullspernode %>
+head.checksum.maxtotal: <%= @head_checksum_maxtotal %>
+head.checksum.maxpernode: <%= @head_checksum_maxpernode %>
+head.filepuller.stathook: <%= @head_filepuller_stathook %>
+<% if @head_filepuller_stathooktimeout != 0  -%>
+head.filepuller.stathooktimeout:<%= @head_filepuller_stathooktimeout %>
+<% end -%>
+head.db.host: <%= @db_host %>
+head.db.user: <%= @db_user %>
+head.db.password: <%= @db_password %>
+head.db.port: <%= @db_port %>
+head.db.poolsz: <%= @db_pool_size %>
+head.db.cnsdbname: <%= @cnsdb_name %>
+head.db.dpmdbname: <%= @dpmdb_name %>
+<% if @enable_ns_oidc -%>
+head.oidc.allowaudience[]: <%= @ns_oidc_clientid %>
+<% @ns_oidc_allowaudience.each do |audience| -%>
+head.oidc.allowaudience[]: <%= audience %>
+<% end -%>
+<% @ns_oidc_allowissuer.each do |issuer| -%>
+head.oidc.allowissuer[]: <%= issuer %>
+<% end -%>
+<% end -%>

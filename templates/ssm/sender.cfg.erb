@@ -1,0 +1,68 @@
+################################################################################
+# Required: broker configuration options
+#
+
+[broker]
+
+# The SSM will query a BDII to find brokers available.  These details are for the 
+# EGI production broker network
+bdii: <%= @bdii_url %>
+network: <%= @broker_network %>
+# OR (these details will only be used if the broker network settings aren't used)
+<% if @broker_host -%>
+host: <%= @broker_host %>
+<% else -%>
+#host: test-msg01.afroditi.hellasgrid.gr
+<% end -%>
+<% if @broker_port -%>
+port: <%= @broker_port %>
+<% else -%>
+#port: 6163
+<% end -%>
+
+# broker authentication.  If use_ssl is set, the certificates configured
+# in the mandatory [certificates] section will be used. 
+use_ssl: <%= @use_ssl %>
+
+
+################################################################################
+# Required: Certificate configuration
+
+[certificates]
+<% if @certificate -%>
+certificate: <%= @certificate %>
+<% else -%>
+#certificate: /etc/grid-security/hostcert.pem
+<% end -%>
+<% if @key -%>
+key: <%= @key %>
+<% else -%>
+#key: /etc/grid-security/hostkey.pem
+<% end -%>
+capath: <%= @capath %>
+# If supplied, outgoing messages will be encrypted using this certificate.
+# May be used in addition to 'use_ssl'. If used, it must be the certificate of
+# the final server that's receiving your messages; not your own, nor the broker.
+<%if @server_cert -%>
+server_cert: <%= @server_cert %>
+<% else -%>
+#server_cert: /etc/grid-security/servercert.pem
+<% end -%>
+
+################################################################################
+# Messaging configuration.
+#
+[messaging]
+
+# Queue to which SSM will send messages
+destination: <%= @messaging_destination %>
+
+# Outgoing messages will be read and removed from this directory.
+path: <%= @messaging_path %>
+
+[logging]
+logfile: <%= @log_file %>
+# Available logging levels:
+# DEBUG, INFO, WARN, ERROR, CRITICAL
+level: <%= @log_level %>
+console: <%= @console %>

@@ -21,11 +21,8 @@
 #
 
 class dmlite (
-  $nodetype = 'head'
+  Enum['head', 'disk'] $nodetype = 'head'
 ) {
-  #  validate_re($nodetype, '^(head|disk)$',
-  #  "${nodetype} is not a valid node type for dmlite. It should be one of 'head' and 'disk'.")
-  #
   #  include('dmlite::install')
   #  if $nodetype == "head" {
   #    include('dmlite::config::head')

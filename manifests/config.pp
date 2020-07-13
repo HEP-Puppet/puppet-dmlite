@@ -1,12 +1,12 @@
 class dmlite::config (
-  $enable_config  = $dmlite::params::enable_config,
-  $user           = $dmlite::params::user,
-  $group          = $dmlite::params::group,
-  $log_level      = $dmlite::params::log_level,
-  $logcomponents  = $dmlite::params::logcomponents
+  Boolean $enable_config = $dmlite::params::enable_config,
+  String $user = $dmlite::params::user,
+  String $group = $dmlite::params::group,
+  Integer $log_level = $dmlite::params::log_level,
+  Array[String] $logcomponents = $dmlite::params::logcomponents
 ) inherits dmlite::params {
 
-  Class[Dmlite::Install] -> Class[Dmlite::Config]
+  Class[dmlite::install] -> Class[dmlite::config]
 
   dmlite::create_config{'default_config':
     config_file_name => 'dmlite',   # create /etc/dmlite.conf

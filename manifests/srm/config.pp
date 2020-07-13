@@ -5,18 +5,18 @@ class dmlite::srm::config (
   $coredump   = $dmlite::srm::params::coredump,
   $dpmhost    = $dmlite::srm::params::dpmhost,
   $nshost     = $dmlite::srm::params::nshost,
-  $numthreads = $dmlite::srm::params::numthreads)
-  inherits dmlite::srm::params {
+  $numthreads = $dmlite::srm::params::numthreads,
+) inherits dmlite::srm::params {
 
   file {
-      '/etc/sysconfig/srmv2.2':
-        ensure  => file,
-        owner   => root,
-        group   => root,
-        mode    => '0644',
-        content => template('dmlite/srm/sysconfig.erb');
-    }
+    '/etc/sysconfig/srmv2.2':
+      ensure  => file,
+      owner   => root,
+      group   => root,
+      mode    => '0644',
+      content => template('dmlite/srm/sysconfig.erb');
+  }
 
-    include dmlite::gaiconfig
+  include dmlite::gaiconfig
 
 }

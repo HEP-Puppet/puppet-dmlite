@@ -1,11 +1,11 @@
 class dmlite::lfc (
-  $dbflavor,
-  $dbuser,
-  $dbpass,
-  $dbhost     = 'localhost',
-  $dpmhost    = "${::fqdn}",
-  $nshost     = "${::fqdn}",
-  $debuginfo  = false,
+  Enum['mysql','oracle'] $dbflavor,
+  String $dbuser,
+  String $dbpass,
+  Stdlib::Host $dbhost = 'localhost',
+  Stdlib::Host $dpmhost = $::fqdn,
+  Stdlib::Host $nshost = $::fqdn,
+  Boolean $debuginfo = false,
 ) {
   # for the LFC, the token password is not used
   $token_password = 'gfgzmup)itecwhvjckp2nvvdcgNurywvhrbIhlfiwp8ctmmwbr'
@@ -15,9 +15,9 @@ class dmlite::lfc (
     debuginfo => $debuginfo
   }
   class{'dmlite::plugins::adapter::config::lfc':
-    token_password => "${token_password}",
-    dpmhost        => "${dpmhost}",
-    nshost         => "${nshost}"
+    token_password => $token_password,
+    dpmhost        => $dpmhost,
+    nshost         => $nshost
   }
   class{'dmlite::plugins::adapter::install':}
 }

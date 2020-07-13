@@ -1,3 +1,63 @@
+2020-06-01 Petr Vokac <petr.vokac@cern.ch>
+    * drop support for puppet 4
+    * update dependencies
+2019-09-05 Petr Vokac <petr.vokac@cern.ch>
+    * simpify StAR accounting
+    * configure SSR via CGI
+    * fix DB names conf
+    * fix deprecations
+2019-02-26 Andrea Manzi  <andrea.manzi@cern.ch>
+    * fix conf for xrootd tpc delegation
+    * raise dome limits
+2019-01-10 Andrea Manzi  <andrea.manzi@cern.ch>
+    * add way to disable xrootd checksum
+    * disable xrootd checksum by default
+2018-09-13 Andrea Manzi  <andrea.manzi@cern.ch>
+    * added changes for DPM 1.11.0
+2018-06-04 Andrea Manzi  <andrea.manzi@cern.ch>
+    * added changes for DPM 1.10.0
+2018-02-21 Andrea Sartirana  <sartiran@llr.in2p3.fr>
+    * Modification needed for new cms federation config
+2018-01-15 Andrea Manzi  <andrea.manzi@cern.ch>
+    * add gai.conf to c7
+    * fix for Multiple LoadModule lines in 00-mpm.conf on CentOS7
+2017-08-17 Andrea Manzi  <andrea.manzi@cern.ch>
+    * correct configuration for dav 3rd party copy on C7
+2017-04-27 Andrea Manzi  <andrea.manzi@cern.ch>
+    * enable epsv_ip if gridftp redirection is enabled
+2017-02-15 Andrea Manzi  <andrea.manzi@cern.ch>
+    * remove puppet4 warnings
+    * add dependency for systemd enable on C7
+2016-12-12 Andrea Manzi  <andrea.manzi@cern.ch>
+    * changes for DPM 1.9.0 configuration
+2016-09-23 Andrea Manzi  <andrea.manzi@cern.ch>
+    * switch to use the new puppet-fetchrl module
+    * use the new option on gridftp to restart the service
+    * added hiera lookup for hdfs plugin params
+    * fixes for puppet 4.6
+2016-07-08 Andrea Manzi  <andrea.manzi@cern.ch>
+    * change the way Dav and xrootd  subscribe to certificates for service restart
+    * added service restart on certificate change to SRM
+2016-05-31 Andrea Manzi  <andrea.manzi@cern.ch>
+    * Enable remote debugging for ATLAS FAX sites
+    * httpd is now restarted when the certificates are renewed
+    * removed xrootd.async off from dpm-xrootd conf
+2016-04-08 Andrea Manzi  <andrea.manzi@cern.ch>
+    * Xrootd support on CentOS7
+    * added missing conf steps for LCGDM-dav
+    * fix support for DPM-HDFS on CentOS7
+    *  Add ConnPoolSize parameter to adapter conf
+2016-02-04 Frederic Schaer  <frederic.schaer@cea.fr>
+    * fix for dpm-xrootd facter, prevents puppet breaks on non-RHE systems
+2016-01-18 Frederic Schaer  <frederic.schaer@cea.fr>
+    * Puppet 4 support
+2016-01-07 Andrea Manzi  <andrea.manzi@cern.ch>
+    * added facter to detect dpm-xrootd version
+    * added conf changes for dpm-xortod 3.6
+2015-12-03 Andrea Manzi  <andrea.manzi@cern.ch>
+    * removed weak ciphers in Lcgdm-Dav
+    * disabled NSAnon by default in Lcgdm-Dav
+    * fixed a problem with enable_space_reporting
 2015-10-20 Andrea Manzi  <andrea.manzi@cern.ch>
     * enable SRM in CentOS7
     * small fixes for puppet  3.8.3

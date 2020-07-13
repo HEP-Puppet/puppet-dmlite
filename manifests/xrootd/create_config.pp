@@ -29,7 +29,8 @@ define dmlite::xrootd::create_config (
   $xrd_network = $xrootd::config::xrd_network,
   $xrd_report = $xrootd::config::xrd_report,
   $xrootd_monitor = $xrootd::config::xrootd_monitor,
-
+  $xrootd_chksum = $xrootd::config::xrootd_chksum,
+  $xrd_timeout = $xrootd::config::xrd_timeout,
   $ofs_authlib = $xrootd::config::ofs_authlib,
   $ofs_authorize = $xrootd::config::ofs_authorize,
   $ofs_persist = $xrootd::config::ofs_persist,
@@ -39,8 +40,9 @@ define dmlite::xrootd::create_config (
   $ofs_cmslib = $xrootd::config::ofs_cmslib,
   $ofs_forward = $xrootd::config::ofs_forward,
   $ofs_tpc = $xrootd::config::ofs_tpc,
-
+  $xrd_ofsckslib = undef,
   $sec_protocol = $xrootd::config::sec_protocol,
+  $sec_level = $xrootd::config::sec_level,
 
   $pss_origin = $xrootd::config::pss_origin,
 
@@ -60,22 +62,19 @@ define dmlite::xrootd::create_config (
   $alice_fqans = undef,
 
   $dpm_xrootd_fedredirs = undef,
-  $use_dmlite_io = false
-
+  $use_dmlite_io = false,
+  $dpm_enable_dome = false,
+  $dpm_xrdhttp_secret_key = undef,
+  $dpm_dome_conf_file = undef,
+  $dpm_xrdhttp_cipherlist = undef
 ) {
   include xrootd::config
 
-  validate_bool($xrd_debug)
-  if $alice_token {
-    validate_bool($alice_token)
-  }
-
-  file { "${filename}":
+  file { $filename:
     ensure  => file,
     owner   => $xrootd::config::xrootd_user,
     group   => $xrootd::config::xrootd_group,
-    content => template($xrootd::config::configfile_template, 'dmlite/xrootd/dpm-xrootd.cfg.erb'
-    )
+    content => template($xrootd::config::configfile_template, 'dmlite/xrootd/dpm-xrootd.cfg.erb')
   }
 
 }

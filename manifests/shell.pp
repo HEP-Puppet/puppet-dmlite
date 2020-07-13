@@ -1,9 +1,6 @@
-class dmlite::shell (
-) inherits dmlite::shell::params {
+class dmlite::shell {
 
-  Class[Dmlite::Shell::Install] -> Class[Dmlite::Shell::Config]
-
-  class{'dmlite::shell::install':}
-  class{'dmlite::shell::config':}
-
+  package { 'dmlite-shell':
+    ensure => present;
+  }
 }

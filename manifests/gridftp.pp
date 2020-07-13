@@ -1,30 +1,48 @@
-
 class dmlite::gridftp (
-  $detach              = 1,
-  $disable_usage_stats = 1,
-  $log_single          = '/var/log/dpm-gsiftp/gridftp.log',
-  $log_transfer        = '/var/log/dpm-gsiftp/dpm-gsiftp.log',
-  $log_level           = 'ERROR,WARN,INFO',
-  $port                = 2811,
-  $dpmhost             = '',
-  $nshost              = $dpmhost,
-  $user                = $dmlite::params::user,
-  $group               = $dmlite::params::group,
-  $enable_hdfs         = false,
-  $data_node           = 0,
-  $remote_nodes        = undef,
+  Integer[0,1] $detach = 1,
+  Integer[0,1] $disable_usage_stats = 1,
+  Stdlib::Unixpath $log_single = '/var/log/dpm-gsiftp/gridftp.log',
+  Stdlib::Unixpath $log_transfer = '/var/log/dpm-gsiftp/dpm-gsiftp.log',
+  String $log_level = 'ERROR,WARN,INFO',
+  Stdlib::Port $port = 2811,
+  Stdlib::Host $dpmhost = $::fqdn,
+  Stdlib::Host $nshost = $::fqdn,
+  String $user = $dmlite::params::user,
+  String $group = $dmlite::params::group,
+  Boolean $enable_hdfs = false,
+  Integer[0,1] $data_node = 0,
+  Optional[String] $remote_nodes = undef,
+  Boolean $enable_dome_checksum = false,
+  Boolean $legacy = true,
+  String $dsi_package_name = 'dmlite-dpm-dsi'
 ) {
-  File['/var/log/dpm-gsiftp'] -> Class[Gridftp::Config]
-  Package['dpm-dsi'] -> Class[Gridftp::Config]
-  Package['dpm-dsi'] -> File['/etc/sysconfig/dpm-gsiftp']
-  Class['Gridftp::Config'] -> Exec['remove_globus-gridftp-server_init_management']
-  Class[Dmlite::Gridftp] ~> Class['Gridftp::Service']
+  File['/var/log/dpm-gsiftp'] -> Class[gridftp::config]
+  Package[$dsi_package_name] -> Class[gridftp::config]
+  Package[$dsi_package_name] -> File['/etc/sysconfig/dpm-gsiftp']
+  Class['gridftp::config'] -> Exec['remove_globus-gridftp-server_init_management']
+  Class[dmlite::gridftp] ~> Class['gridftp::service']
 
+  if !$legacy {
+    Class[dmlite::base::config] -> Class[dmlite::gridftp]
+  }
+  else {
+    Class[lcgdm::base::config] -> Class[dmlite::gridftp]
+  }
   if $enable_hdfs {
+    include dmlite::plugins::hdfs::params
     $java_home = $dmlite::plugins::hdfs::params::java_home
   }
-
-  package{'dpm-dsi': ensure => present}
+  
+  #if gridftp redirection is enabled ( so remote_nodes is set to 1) configure epsv_ip
+  case $remote_nodes {
+    undef: {
+      $epsv_ip = false
+    }
+    default: {
+      $epsv_ip = true
+    }
+  }
+  package{$dsi_package_name: ensure => present}
 
   file {
     '/etc/sysconfig/dpm-gsiftp':
@@ -43,8 +61,8 @@ class dmlite::gridftp (
   }
   class{'gridftp::install':}
   class{'gridftp::config':
-    user                => "${user}",
-    group               => "${group}",
+    user                => $user,
+    group               => $group,
     auth_level          => 0,
     detach              => $detach,
     disable_usage_stats => $disable_usage_stats,
@@ -58,7 +76,8 @@ class dmlite::gridftp (
     sysconfigfile       => '/etc/sysconfig/globus',
     thread_model        => 'pthread',
     data_node           => $data_node,
-    remote_nodes        => "${remote_nodes}",
+    remote_nodes        => $remote_nodes,
+    epsv_ip             => $epsv_ip,
   }
   exec{'remove_globus-gridftp-server_init_management':
     command => '/sbin/chkconfig globus-gridftp-server off',
@@ -68,7 +87,10 @@ class dmlite::gridftp (
   include dmlite::gaiconfig
 
   class{'gridftp::service':
-    service => 'dpm-gsiftp'
+    service                 => 'dpm-gsiftp',
+    certificate             => "/etc/grid-security/${dmlite::gridftp::user}/dpmcert.pem",
+    key                     => "/etc/grid-security/${dmlite::gridftp::user}/dpmkey.pem",
+    restart_on_cert_renewal => true
   }
 }
 

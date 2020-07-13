@@ -6,16 +6,14 @@ class dmlite::plugins::profiler::config (
   $auth             = $dmlite::plugins::profiler::params::auth,
 ) inherits dmlite::plugins::profiler::params {
 
-  validate_array($collectors)
-
   if defined ('xrootd::service'){
-    Class[Dmlite::Plugins::Profiler::Config] ~> Class[Xrootd::Service]
+    Class[dmlite::plugins::profiler::config] ~> Class[xrootd::service]
   }
   if defined ('dmlite::dav::service'){
-    Class[Dmlite::Plugins::Profiler::Config] ~> Class[Dmlite::Dav::Service]
+    Class[dmlite::plugins::profiler::config] ~> Class[dmlite::dav::service]
   }
   if defined ('gridftp::service'){
-    Class[Dmlite::Plugins::Profiler::Config] ~> Class[Gridftp::Service]
+    Class[dmlite::plugins::profiler::config] ~> Class[gridftp::service]
   }
   file {
     '/etc/dmlite.conf.d/profiler.conf':
